@@ -124,15 +124,15 @@ module Identifiable
     # By overriding ActiveRecord's `#to_key`, this means that Rails' helpers,
     # such as `dom_id` will use the public ID instead of the regular ID when
     # identifying the record.
-    def to_key
-      [self[self.class.identifiable_column]]
-    end
+    # def to_key
+    #  [self[self.class.identifiable_column]]
+    # end
 
     # By overriding ActiveRecord's `#to_param`, this means that Rails' helpers,
     # such as the `link_to` helpers will default to using the public ID
     # instead of the regular ID when identifying the record.
-    def to_param
-      self[self.class.identifiable_column]
-    end
+    # def to_param
+    #  self[self.class.identifiable_column]
+    # end
   end
 end
