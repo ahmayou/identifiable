@@ -8,7 +8,7 @@ module Identifiable
       end
 
       def random_id
-        SecureRandom.alphanumeric(@record.class.identifiable_length)
+        SecureRandom.alphanumeric(@record.class.identifiable_length).upcase
       end
     end
   end
