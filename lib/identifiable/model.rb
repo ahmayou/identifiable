@@ -4,6 +4,8 @@ module Identifiable
   module Model
     extend ActiveSupport::Concern
 
+    @skip_identifiable_validation = false
+
     class_methods do
       attr_reader :identifiable_column
       attr_reader :identifiable_style
@@ -15,7 +17,7 @@ module Identifiable
         @identifiable_style = style
         @identifiable_length = length
 
-        unless skip_identifiable_validation
+        unless Identifiable::Model.skip_identifiable_validation
           _identifiable_validate_column_must_be_a_symbol
           _identifiable_validate_column_cannot_be_id
           _identifiable_validate_column_must_be_in_the_table
@@ -124,14 +126,19 @@ module Identifiable
       self[self.class.identifiable_column] = new_public_id
     end
 
-    # Method to disable validations globally
-    def self.disable_identifiable_validations
-      self.skip_identifiable_validation = true
+    # Instance-level method to access the flag
+    def self.skip_identifiable_validation
+      @skip_identifiable_validation
     end
 
-    # Method to enable validations globally
+    # Method to disable identifiable validations globally
+    def self.disable_identifiable_validations
+      @skip_identifiable_validation = true
+    end
+
+    # Method to enable identifiable validations globally
     def self.enable_identifiable_validations
-      self.skip_identifiable_validation = false
+      @skip_identifiable_validation = false
     end
 
     # By overriding ActiveRecord's `#to_key`, this means that Rails' helpers,
