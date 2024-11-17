@@ -8,18 +8,21 @@ module Identifiable
       attr_reader :identifiable_column
       attr_reader :identifiable_style
       attr_reader :identifiable_length
+      attr_accessor :skip_identifiable_validation
 
       def identifiable(column: :public_id, style: :numeric, length: 8)
         @identifiable_column = column
         @identifiable_style = style
         @identifiable_length = length
 
-        _identifiable_validate_column_must_be_a_symbol
-        _identifiable_validate_column_cannot_be_id
-        _identifiable_validate_column_must_be_in_the_table
-        _identifiable_validate_style_must_be_a_valid_style
-        _identifiable_validate_length_must_be_an_integer
-        _identifiable_validate_length_must_be_in_a_valid_range
+        unless skip_identifiable_validation
+          _identifiable_validate_column_must_be_a_symbol
+          _identifiable_validate_column_cannot_be_id
+          _identifiable_validate_column_must_be_in_the_table
+          _identifiable_validate_style_must_be_a_valid_style
+          _identifiable_validate_length_must_be_an_integer
+          _identifiable_validate_length_must_be_in_a_valid_range
+        end
 
         before_create :set_public_id!
       end
@@ -119,6 +122,16 @@ module Identifiable
 
       # If we got this far, we've got a new valid public ID, time to set it!
       self[self.class.identifiable_column] = new_public_id
+    end
+
+    # Method to disable validations globally
+    def self.disable_identifiable_validations
+      self.skip_identifiable_validation = true
+    end
+
+    # Method to enable validations globally
+    def self.enable_identifiable_validations
+      self.skip_identifiable_validation = false
     end
 
     # By overriding ActiveRecord's `#to_key`, this means that Rails' helpers,
